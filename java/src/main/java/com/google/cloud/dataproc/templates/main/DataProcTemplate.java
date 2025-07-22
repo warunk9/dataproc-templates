@@ -17,6 +17,7 @@ package com.google.cloud.dataproc.templates.main;
 
 import com.google.cloud.dataproc.templates.BaseTemplate;
 import com.google.cloud.dataproc.templates.BaseTemplate.TemplateName;
+import com.google.cloud.dataproc.templates.api.APIToGCSAndBQ;
 import com.google.cloud.dataproc.templates.bigquery.BigQueryToGCS;
 import com.google.cloud.dataproc.templates.bigquery.BigQueryToJDBC;
 import com.google.cloud.dataproc.templates.databases.CassandraToBQ;
@@ -31,6 +32,7 @@ import com.google.cloud.dataproc.templates.general.GeneralTemplate;
 import com.google.cloud.dataproc.templates.hbase.HbaseToGCS;
 import com.google.cloud.dataproc.templates.hive.HiveToBigQuery;
 import com.google.cloud.dataproc.templates.hive.HiveToGCS;
+import com.google.cloud.dataproc.templates.iceberg.BigQueryToIceberg;
 import com.google.cloud.dataproc.templates.jdbc.JDBCToBigQuery;
 import com.google.cloud.dataproc.templates.jdbc.JDBCToGCS;
 import com.google.cloud.dataproc.templates.jdbc.JDBCToJDBC;
@@ -40,6 +42,7 @@ import com.google.cloud.dataproc.templates.kafka.KafkaToBQDstream;
 import com.google.cloud.dataproc.templates.kafka.KafkaToGCS;
 import com.google.cloud.dataproc.templates.kafka.KafkaToGCSDstream;
 import com.google.cloud.dataproc.templates.kafka.KafkaToPubSub;
+import com.google.cloud.dataproc.templates.mongo.MongoToGCSAndBQ;
 import com.google.cloud.dataproc.templates.pubsub.PubSubToBQ;
 import com.google.cloud.dataproc.templates.pubsub.PubSubToBigTable;
 import com.google.cloud.dataproc.templates.pubsub.PubSubToGCS;
@@ -109,6 +112,9 @@ public class DataProcTemplate {
           .put(TemplateName.KAFKATOBQDSTREAM, (args) -> new KafkaToBQDstream())
           .put(TemplateName.KAFKATOGCSDSTREAM, (args) -> new KafkaToGCSDstream())
           .put(TemplateName.MONGOTOBQ, MongoToBQ::of)
+          .put(TemplateName.MONGOTOGCSANDBQ, MongoToGCSAndBQ::of)
+          .put(TemplateName.APITOGCSANDBQ, APIToGCSAndBQ::of)
+          .put(TemplateName.BIGQUERYTOICEBERG, BigQueryToIceberg::of)
           .build();
   private static final String TEMPLATE_NAME_LONG_OPT = "template";
   private static final String TEMPLATE_PROPERTY_LONG_OPT = "templateProperty";
