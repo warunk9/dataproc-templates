@@ -543,4 +543,49 @@ public interface TemplateConstants {
   String SPARK_BIGTABLE_PROJECT_ID = "spark.bigtable.project.id";
   String SPARK_BIGTABLE_INSTANCE_ID = "spark.bigtable.instance.id";
   String SPARK_BIGTABLE_CATALOG = "catalog";
+
+   /** Apache Iceberg Common Properties */
+  String IN_MEMORY = "in-memory";
+
+  String HADOOP = "hadoop";
+  String GS_FS = "gs://";
+  String ICEBERG_FORMAT = "iceberg";
+  String BIGQUERY_INPUT_FORMAT = "bigquery";
+  String INPUT_BQ_TABLE_NAME = "bigquery.input.table";
+  String INPUT_BQ_DATASET_ID = "bigquery.input.dataset.id";
+  String ICEBERG_OUTPUT_MODE = "iceberg.output.mode";
+  String ICEBERG_GCS_WAREHOUSE_LOCATION = "iceberg.gcs.warehouse.location";
+  String ICEBERG_CATALOG_NAME = "iceberg.catalog.name";
+  String ICEBERG_DATABASE_NAME = "iceberg.database.name";
+  String ICEBERG_TABLE_NAME = "iceberg.table.name";
+
+  /** Properties for GCS output */
+  String GCS_OUTPUT_LOCATION = "gcs.output.location";
+
+  String GCS_DEFAULT_DELIMITTER = ",";
+  String GCS_INTERMEDIATE_OUTPUT_LOCATION = "gcs.intermediate.output.location";
+  String GCS_ENCRYPT_OUTPUT_LOCATION = "gcs.encrypt.output.location";
+  String GCS_OUTPUT_FORMAT = "gcs.output.format";
+  String GCS_WRITE_MODE = "gcs.write.mode";
+  String GCS_DELIMITER = "gcs.output.delimiter";
+
+  /** Properties for BigQuery output */
+  String BQ_TEMP_GCS_BUCKET = "bigquery.temp.gcs.bucket";
+
+  String BQ_WRITE_MODE = "bigquery.write.mode";
+  String BQ_DATASET_ID = "bigquery.dataset.id";
+  String BQ_TABLE_NAME = "bigquery.table.name";
+
+  /** MongoDB Common Properties */
+  String MONGO_URI = "uri";
+
+  String MONGO_INPUT_DATABASE = "mongodb.database";
+  String MONGO_INPUT_COLLECTION = "mongodb.collection";
+
+  /** API Constant */
+  String API_SECRET_KEY = "api.secret.key";
+
+  String API_INITIAL_COLLECTION = "api.initial.collection";
+  String API_BASE_URL = "api.base.url";
+  String API_BATCH_SIZE = "api.batch.size";
 }
