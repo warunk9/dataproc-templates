@@ -252,7 +252,7 @@ public class PubSubToBigTable implements BaseTemplate {
       case "binary":
         return DataTypes.BinaryType;
 
-        // Default to StringType for any unmatched types.
+      // Default to StringType for any unmatched types.
       default:
         return DataTypes.StringType;
     }

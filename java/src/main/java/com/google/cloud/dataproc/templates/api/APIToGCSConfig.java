@@ -70,7 +70,6 @@ public class APIToGCSConfig {
   @Pattern(regexp = "ALL|DEBUG|ERROR|FATAL|INFO|OFF|TRACE|WARN")
   private String sparkLogLevel;
 
-
   public String getProjectId() {
     return projectId;
   }
@@ -110,7 +109,6 @@ public class APIToGCSConfig {
   public void setGcsWriteMode(String gcsWriteMode) {
     this.gcsWriteMode = gcsWriteMode;
   }
-
 
   public String getSparkLogLevel() {
     return sparkLogLevel;

@@ -36,10 +36,8 @@ public class APIToBigQuery implements BaseTemplate {
   private static final Logger LOGGER = LoggerFactory.getLogger(APIToBigQuery.class);
 
   private final APIToBigQueryConfig config;
-  private final String gcsOutputLocation;
   private final String bqTableName;
   private final String tempGcsBucket;
-  private final String gcsOutputMode;
   private final String bqOutputMode;
   private final String baseUrl;
   private final String tokenUrl;
@@ -56,7 +54,6 @@ public class APIToBigQuery implements BaseTemplate {
     this.tokenUrl = baseUrl + "tokens";
     this.apiInitialCollection = config.getApiInitialCollection();
     this.secretKey = config.getApiSecretKey();
-    this.gcsOutputLocation = config.getGcsOutputLocation();
     this.bqTableName =
         String.format(
             TemplateConstants.BQ_TABLE_NAME_FORMAT,
@@ -64,12 +61,11 @@ public class APIToBigQuery implements BaseTemplate {
             config.getBigQueryDatasetId(),
             config.getBigQueryTableName());
     this.tempGcsBucket = config.getTempGcsBucket();
-    this.gcsOutputMode = config.getGcsWriteMode();
     this.bqOutputMode = config.getBigQueryOutputMode();
     this.batchSize = config.getBatchSize();
     this.spark =
         SparkSession.builder()
-            .appName("Spark APIToGCSAndBQ")
+            .appName("Spark APIToBigQuery")
             .config("temporaryGcsBucket", tempGcsBucket)
             .getOrCreate();
     this.spark.sparkContext().setLogLevel("INFO");

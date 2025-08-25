@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.dataproc.templates.BaseTemplate;
 import com.google.cloud.dataproc.templates.util.PropertyUtil;
-import com.google.cloud.dataproc.templates.util.TemplateConstants;
 import com.google.cloud.dataproc.templates.util.ValidationUtil;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,10 +36,7 @@ public class APIToGCS implements BaseTemplate {
 
   private final APIToGCSConfig config;
   private final String gcsOutputLocation;
-  private final String bqTableName;
-  private final String tempGcsBucket;
   private final String gcsOutputMode;
-  private final String bqOutputMode;
   private final String baseUrl;
   private final String tokenUrl;
   private final String apiInitialCollection;
@@ -57,21 +53,9 @@ public class APIToGCS implements BaseTemplate {
     this.apiInitialCollection = config.getApiInitialCollection();
     this.secretKey = config.getApiSecretKey();
     this.gcsOutputLocation = config.getGcsOutputLocation();
-    this.bqTableName =
-        String.format(
-            TemplateConstants.BQ_TABLE_NAME_FORMAT,
-            config.getProjectId(),
-            config.getBigQueryDatasetId(),
-            config.getBigQueryTableName());
-    this.tempGcsBucket = config.getTempGcsBucket();
     this.gcsOutputMode = config.getGcsWriteMode();
-    this.bqOutputMode = config.getBigQueryOutputMode();
     this.batchSize = config.getBatchSize();
-    this.spark =
-        SparkSession.builder()
-            .appName("Spark APIToGCSAndBQ")
-            .config("temporaryGcsBucket", tempGcsBucket)
-            .getOrCreate();
+    this.spark = SparkSession.builder().appName("Spark APIToGCS").getOrCreate();
     this.spark.sparkContext().setLogLevel("INFO");
   }
 
@@ -121,7 +105,7 @@ public class APIToGCS implements BaseTemplate {
             Dataset<Row> resultDf = finalDF.repartition(1);
 
             try {
-               writeToGCS(resultDf); 
+              writeToGCS(resultDf);
               LOGGER.info("Successfully wrote API data to GCS and BigQuery.");
             } catch (Exception e) {
               LOGGER.error("Error writing to GCS and BigQuery", e);
@@ -211,7 +195,6 @@ public class APIToGCS implements BaseTemplate {
       throw new RuntimeException(e);
     }
   }
-
 
   private ApiResponse fetchAPIData(String token, String url) throws IOException {
     OkHttpClient client = new OkHttpClient();

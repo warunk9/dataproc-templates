@@ -73,7 +73,6 @@ public class APIToBigQueryConfig {
   @Pattern(regexp = "ALL|DEBUG|ERROR|FATAL|INFO|OFF|TRACE|WARN")
   private String sparkLogLevel;
 
-
   public String getProjectId() {
     return projectId;
   }
