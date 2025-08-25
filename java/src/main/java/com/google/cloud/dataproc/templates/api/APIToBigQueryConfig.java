@@ -26,7 +26,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.util.Properties;
 
-public class APIToGCSAndBQConfig {
+public class APIToBigQueryConfig {
   static final ObjectMapper mapper =
       new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -37,46 +37,6 @@ public class APIToGCSAndBQConfig {
   @JsonProperty(value = API_BASE_URL)
   @NotEmpty
   private String baseUrl;
-
-  @JsonProperty(value = GCS_OUTPUT_LOCATION)
-  @Pattern(regexp = "gs://(.*?)/(.*)")
-  @NotEmpty
-  private String gcsOutputLocation;
-
-  @JsonProperty(value = GCS_OUTPUT_FORMAT)
-  @NotEmpty
-  @Pattern(regexp = "csv|avro|orc|json|parquet")
-  private String gcsOutputFormat;
-
-  @JsonProperty(value = GCS_WRITE_MODE)
-  @NotEmpty
-  @Pattern(regexp = "(?i)(Overwrite|ErrorIfExists|Append|Ignore)")
-  private String gcsWriteMode;
-
-  @JsonProperty(value = GCS_DELIMITER)
-  private String gcsDelimiter;
-
-  @JsonProperty(value = BQ_DATASET_ID)
-  @NotEmpty
-  private String bigQueryDatasetId;
-
-  @JsonProperty(value = BQ_TABLE_NAME)
-  @NotEmpty
-  private String bigQueryTableName;
-
-  @JsonProperty(value = BQ_WRITE_MODE)
-  @NotEmpty
-  @Pattern(regexp = "(?i)(Overwrite|ErrorIfExists|Append)")
-  private String bigQueryOutputMode;
-
-  @JsonProperty(value = BQ_TEMP_GCS_BUCKET)
-  @Pattern(regexp = "gs://(.*?)/?")
-  @NotEmpty // Added @NotEmpty for temporary bucket
-  private String tempGcsBucket;
-
-  @JsonProperty(value = SPARK_LOG_LEVEL, defaultValue = "INFO")
-  @Pattern(regexp = "ALL|DEBUG|ERROR|FATAL|INFO|OFF|TRACE|WARN")
-  private String sparkLogLevel;
 
   @JsonProperty(value = API_SECRET_KEY)
   @NotEmpty
@@ -90,6 +50,29 @@ public class APIToGCSAndBQConfig {
   @NotNull
   @Min(value = 100, message = "Batch size must be at least 100")
   private int batchSize;
+
+  @JsonProperty(value = API_BQ_OUTPUT_DATASET_NAME)
+  @NotEmpty
+  private String bigQueryDatasetId;
+
+  @JsonProperty(value = API_BQ_OUTPUT_TABLE_NAME)
+  @NotEmpty
+  private String bigQueryTableName;
+
+  @JsonProperty(value = API_BQ_OUTPUT_WRITE_MODE)
+  @NotEmpty
+  @Pattern(regexp = "(?i)(Overwrite|ErrorIfExists|Append)")
+  private String bigQueryOutputMode;
+
+  @JsonProperty(value = API_BQ_OUTPUT_TEMP_GCS_BUCKET)
+  @Pattern(regexp = "gs://(.*?)/?")
+  @NotEmpty // Added @NotEmpty for temporary bucket
+  private String tempGcsBucket;
+
+  @JsonProperty(value = SPARK_LOG_LEVEL, defaultValue = "INFO")
+  @Pattern(regexp = "ALL|DEBUG|ERROR|FATAL|INFO|OFF|TRACE|WARN")
+  private String sparkLogLevel;
+
 
   public String getProjectId() {
     return projectId;
@@ -105,38 +88,6 @@ public class APIToGCSAndBQConfig {
 
   public void setBaseUrl(String baseUrl) {
     this.baseUrl = baseUrl;
-  }
-
-  public String getGcsOutputLocation() {
-    return gcsOutputLocation;
-  }
-
-  public void setGcsOutputLocation(String gcsOutputLocation) {
-    this.gcsOutputLocation = gcsOutputLocation;
-  }
-
-  public String getGcsOutputFormat() {
-    return gcsOutputFormat;
-  }
-
-  public void setGcsOutputFormat(String gcsOutputFormat) {
-    this.gcsOutputFormat = gcsOutputFormat;
-  }
-
-  public String getGcsWriteMode() {
-    return gcsWriteMode;
-  }
-
-  public void setGcsWriteMode(String gcsWriteMode) {
-    this.gcsWriteMode = gcsWriteMode;
-  }
-
-  public String getGcsDelimiter() {
-    return gcsDelimiter;
-  }
-
-  public void setGcsDelimiter(String gcsDelimiter) {
-    this.gcsDelimiter = gcsDelimiter;
   }
 
   public String getBigQueryDatasetId() {
@@ -203,28 +154,16 @@ public class APIToGCSAndBQConfig {
     this.batchSize = batchSize;
   }
 
-  public static APIToGCSAndBQConfig fromProperties(Properties properties) {
+  public static APIToBigQueryConfig fromProperties(Properties properties) {
     // Ensure the properties object is compatible with ObjectMapper
-    return mapper.convertValue(properties, APIToGCSAndBQConfig.class);
+    return mapper.convertValue(properties, APIToBigQueryConfig.class);
   }
 
   @Override
   public String toString() {
-    return "APIToGCSAndBQConfig{"
+    return "APIToBigQueryConfig{"
         + "projectId='"
         + projectId
-        + '\''
-        + ", gcsOutputLocation='"
-        + gcsOutputLocation
-        + '\''
-        + ", gcsOutputFormat='"
-        + gcsOutputFormat
-        + '\''
-        + ", gcsWriteMode='"
-        + gcsWriteMode
-        + '\''
-        + ", gcsDelimiter='"
-        + gcsDelimiter
         + '\''
         + ", bigQueryDatasetId='"
         + bigQueryDatasetId

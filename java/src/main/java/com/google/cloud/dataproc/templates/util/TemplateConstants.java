@@ -558,4 +558,16 @@ public interface TemplateConstants {
 
   /** Please don't change it. It is a custom PubSub reader DataSource format name. */
   String PUBSUB_DATASOURCE_SHORT_NAME = "pubsub";
+
+  String API_SECRET_KEY = "api.secret.key";
+  String API_INITIAL_COLLECTION = "api.initial.collection";
+  String API_BASE_URL = "api.base.url";
+  String API_BATCH_SIZE = "api.batch.size";
+  String API_TO_GCS_OUTPUT_LOCATION = "apitogcs.output.location";
+  String API_TO_GCS_OUTPUT_FORMAT = "apitogcs.output.format";
+  String API_TO_GCS_WRITE_MODE = "apitogcs.write.mode";
+  String API_BQ_OUTPUT_DATASET_NAME = "api.bq.output.dataset.name";
+  String API_BQ_OUTPUT_TABLE_NAME = "api.bq.output.table.name";
+  String API_BQ_OUTPUT_WRITE_MODE = "api.bq.output.write.mode";
+  String API_BQ_OUTPUT_TEMP_GCS_BUCKET = "api.bq.output.temp.gcs.bucket";
 }

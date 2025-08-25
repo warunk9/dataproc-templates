@@ -25,18 +25,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import okhttp3.*;
 import org.apache.spark.sql.*;
 import org.apache.spark.sql.types.StructType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class APIToGCSAndBQ implements BaseTemplate {
+public class APIToGCS implements BaseTemplate {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(APIToGCSAndBQ.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(APIToGCS.class);
 
-  private final APIToGCSAndBQConfig config;
+  private final APIToGCSConfig config;
   private final String gcsOutputLocation;
   private final String bqTableName;
   private final String tempGcsBucket;
@@ -50,18 +49,14 @@ public class APIToGCSAndBQ implements BaseTemplate {
 
   private final SparkSession spark;
 
-  public APIToGCSAndBQ(APIToGCSAndBQConfig config) {
+  public APIToGCS(APIToGCSConfig config) {
 
     this.config = config;
-
     this.baseUrl = config.getBaseUrl();
     this.tokenUrl = baseUrl + "tokens";
     this.apiInitialCollection = config.getApiInitialCollection();
     this.secretKey = config.getApiSecretKey();
-
     this.gcsOutputLocation = config.getGcsOutputLocation();
-
-
     this.bqTableName =
         String.format(
             TemplateConstants.BQ_TABLE_NAME_FORMAT,
@@ -72,21 +67,19 @@ public class APIToGCSAndBQ implements BaseTemplate {
     this.gcsOutputMode = config.getGcsWriteMode();
     this.bqOutputMode = config.getBigQueryOutputMode();
     this.batchSize = config.getBatchSize();
-
     this.spark =
         SparkSession.builder()
             .appName("Spark APIToGCSAndBQ")
             .config("temporaryGcsBucket", tempGcsBucket)
             .getOrCreate();
-
     this.spark.sparkContext().setLogLevel("INFO");
   }
 
-  public static APIToGCSAndBQ of(String... args) {
-    APIToGCSAndBQConfig config = APIToGCSAndBQConfig.fromProperties(PropertyUtil.getProperties());
+  public static APIToGCS of(String... args) {
+    APIToGCSConfig config = APIToGCSConfig.fromProperties(PropertyUtil.getProperties());
     ValidationUtil.validateOrThrow(config);
     LOGGER.info("Config loaded\n{}", config);
-    return new APIToGCSAndBQ(config);
+    return new APIToGCS(config);
   }
 
   @Override
@@ -128,13 +121,7 @@ public class APIToGCSAndBQ implements BaseTemplate {
             Dataset<Row> resultDf = finalDF.repartition(1);
 
             try {
-              CompletableFuture<Void> gcsFuture =
-                  CompletableFuture.runAsync(() -> writeToGCS(resultDf));
-              CompletableFuture<Void> bqFuture =
-                  CompletableFuture.runAsync(() -> writeToBigQuery(resultDf));
-
-              CompletableFuture.allOf(gcsFuture, bqFuture).join();
-
+               writeToGCS(resultDf); 
               LOGGER.info("Successfully wrote API data to GCS and BigQuery.");
             } catch (Exception e) {
               LOGGER.error("Error writing to GCS and BigQuery", e);
@@ -189,7 +176,9 @@ public class APIToGCSAndBQ implements BaseTemplate {
 
     try (Response response = client.newCall(request).execute()) {
 
-      if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+      if (!response.isSuccessful()) {
+        throw new IOException("Unexpected code " + response);
+      }
 
       ObjectMapper mapper = new ObjectMapper();
       JsonNode jsonNode = mapper.readTree(response.body().string());
@@ -213,7 +202,6 @@ public class APIToGCSAndBQ implements BaseTemplate {
     try {
       df.write()
           .format(config.getGcsOutputFormat())
-          .option("delimiter", gcsDelimiter)
           .option("header", "true")
           .mode(gcsOutputMode)
           .save(gcsOutputLocation);
@@ -224,20 +212,6 @@ public class APIToGCSAndBQ implements BaseTemplate {
     }
   }
 
-  private void writeToBigQuery(Dataset<Row> df) {
-    try {
-      df.write()
-          .format("bigquery")
-          .option("table", bqTableName)
-          .option("temporaryGcsBucket", tempGcsBucket)
-          .mode(bqOutputMode)
-          .save();
-      LOGGER.info("Data successfully written to BigQuery");
-    } catch (Exception e) {
-      LOGGER.error("Error writing to BigQuery", e);
-      throw new RuntimeException(e);
-    }
-  }
 
   private ApiResponse fetchAPIData(String token, String url) throws IOException {
     OkHttpClient client = new OkHttpClient();
@@ -251,9 +225,9 @@ public class APIToGCSAndBQ implements BaseTemplate {
             .build();
 
     try (Response response = client.newCall(request).execute()) {
-      if (!response.isSuccessful())
+      if (!response.isSuccessful()) {
         throw new IOException("Failed to fetch data from API: " + response);
-
+      }
       String jsonData = response.body().string();
       String nextPageLink = extractNextPageLink(response.headers().toMultimap());
 
