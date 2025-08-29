@@ -561,6 +561,7 @@ public interface TemplateConstants {
 
   /** API to GCS and bigquery */
   String API_SECRET_KEY = "api.secret.key";
+
   String API_INITIAL_COLLECTION = "api.initial.collection";
   String API_BASE_URL = "api.base.url";
   String API_BATCH_SIZE = "api.batch.size";

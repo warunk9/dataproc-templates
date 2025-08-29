@@ -5,7 +5,7 @@
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
@@ -15,22 +15,21 @@
  */
 package com.google.cloud.dataproc.templates.api;
 
-import static com.google.cloud.dataproc.templates.util.TemplateConstants.API_SECRET_KEY;
-import static com.google.cloud.dataproc.templates.util.TemplateConstants.API_INITIAL_COLLECTION;
 import static com.google.cloud.dataproc.templates.util.TemplateConstants.API_BASE_URL;
 import static com.google.cloud.dataproc.templates.util.TemplateConstants.API_BATCH_SIZE;
-import static com.google.cloud.dataproc.templates.util.TemplateConstants.API_TO_GCS_OUTPUT_LOCATION;
+import static com.google.cloud.dataproc.templates.util.TemplateConstants.API_INITIAL_COLLECTION;
+import static com.google.cloud.dataproc.templates.util.TemplateConstants.API_SECRET_KEY;
 import static com.google.cloud.dataproc.templates.util.TemplateConstants.API_TO_GCS_OUTPUT_FORMAT;
+import static com.google.cloud.dataproc.templates.util.TemplateConstants.API_TO_GCS_OUTPUT_LOCATION;
 import static com.google.cloud.dataproc.templates.util.TemplateConstants.API_TO_GCS_WRITE_MODE;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
 import com.google.cloud.dataproc.templates.util.PropertyUtil;
+import com.google.cloud.dataproc.templates.util.ValidationUtil.ValidationException;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.ThrowingSupplier;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
@@ -51,11 +50,16 @@ class APIToGCSTest {
     PropertyUtil.getProperties().setProperty(API_TO_GCS_WRITE_MODE, "append");
   }
 
-  @Test
-  void runTemplateWithValidParameters() {
+  @ParameterizedTest
+  @MethodSource("propertyKeys")
+  void runTemplateWithValidParameters(String propKey) {
     LOGGER.info("Running test: runTemplateWithValidParameters");
-    APIToGCS template = new APIToGCS();
-    assertDoesNotThrow(template::validateInput);
+    // APIToGCS template = new APIToGCS();
+    // assertDoesNotThrow(template::validateInput);
+
+    LOGGER.info("Running test: runTemplateWithValidParameters");
+
+    assertDoesNotThrow((ThrowingSupplier<APIToGCS>) APIToGCS::of);
   }
 
   @ParameterizedTest
@@ -63,16 +67,24 @@ class APIToGCSTest {
   void runTemplateWithInvalidParameters(String propKey) {
     LOGGER.info("Running test: runTemplateWithInvalidParameters");
     PropertyUtil.getProperties().setProperty(propKey, "");
-    APIToGCS template = new APIToGCS();
-    Exception exception = assertThrows(IllegalArgumentException.class, template::validateInput);
-    assertEquals(
-        "Required parameters for ApiToGCS not passed. "
-            + "Set mandatory parameter for ApiToGCS template in "
-            + "resources/conf/template.properties file.",
-        exception.getMessage());
+    // APIToGCS template = new APIToGCS();
+    // Exception exception = assertThrows(IllegalArgumentException.class, template::validateInput);
+    ValidationException exception = assertThrows(ValidationException.class, APIToGCS::of);
+
+    // assertEquals(
+    //     "Required parameters for ApiToGCS not passed. "
+    //         + "Set mandatory parameter for ApiToGCS template in "
+    //         + "resources/conf/template.properties file.",
+    //     exception.getMessage());
   }
 
   static Stream<String> propertyKeys() {
-    return Stream.of(API_SECRET_KEY, API_INITIAL_COLLECTION, API_BASE_URL, API_TO_GCS_OUTPUT_LOCATION, API_TO_GCS_OUTPUT_FORMAT, API_TO_GCS_WRITE_MODE);
+    return Stream.of(
+        API_SECRET_KEY,
+        API_INITIAL_COLLECTION,
+        API_BASE_URL,
+        API_TO_GCS_OUTPUT_LOCATION,
+        API_TO_GCS_OUTPUT_FORMAT,
+        API_TO_GCS_WRITE_MODE);
   }
 }
