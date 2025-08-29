@@ -559,6 +559,7 @@ public interface TemplateConstants {
   /** Please don't change it. It is a custom PubSub reader DataSource format name. */
   String PUBSUB_DATASOURCE_SHORT_NAME = "pubsub";
 
+  /** API to GCS and bigquery */
   String API_SECRET_KEY = "api.secret.key";
   String API_INITIAL_COLLECTION = "api.initial.collection";
   String API_BASE_URL = "api.base.url";
