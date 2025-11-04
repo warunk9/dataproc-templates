@@ -17,6 +17,8 @@ package com.google.cloud.dataproc.templates.main;
 
 import com.google.cloud.dataproc.templates.BaseTemplate;
 import com.google.cloud.dataproc.templates.BaseTemplate.TemplateName;
+import com.google.cloud.dataproc.templates.api.APIToBigQuery;
+import com.google.cloud.dataproc.templates.api.APIToGCS;
 import com.google.cloud.dataproc.templates.bigquery.BigQueryToGCS;
 import com.google.cloud.dataproc.templates.bigquery.BigQueryToJDBC;
 import com.google.cloud.dataproc.templates.databases.CassandraToBQ;
@@ -105,6 +107,8 @@ public class DataProcTemplate {
           .put(TemplateName.KAFKATOBQDSTREAM, (args) -> new KafkaToBQDstream())
           .put(TemplateName.KAFKATOGCSDSTREAM, (args) -> new KafkaToGCSDstream())
           .put(TemplateName.MONGOTOBQ, MongoToBQ::of)
+          .put(TemplateName.APITOBIGQUERY, APIToBigQuery::of)
+          .put(TemplateName.APITOGCS, APIToGCS::of)
           .build();
   private static final String TEMPLATE_NAME_LONG_OPT = "template";
   private static final String TEMPLATE_PROPERTY_LONG_OPT = "templateProperty";

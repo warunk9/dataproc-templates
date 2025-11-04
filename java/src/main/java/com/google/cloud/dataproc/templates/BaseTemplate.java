@@ -62,7 +62,9 @@ public interface BaseTemplate {
     KAFKATOBQDSTREAM,
     KAFKATOGCSDSTREAM,
     MONGOTOBQ,
-    BIGQUERYTOJDBC
+    BIGQUERYTOJDBC,
+    APITOBIGQUERY,
+    APITOGCS
   }
 
   default Properties getProperties() {
